@@ -59,15 +59,17 @@ public class SmsSender extends AbstractSender {
 		String filterContent = message.getContent().replaceAll("(<a href.*(?=</a>)</a>)|(\n)", "");
 		String content = message.getTitle() + " " + filterContent;
 		String urlPrefix = sender.getUrl();
-		String urlPars = m_senderConfigManager.queryParString(sender);
-
+        System.out.println("urlPrefix:"+urlPrefix);
+        System.out.println("pars:"+sender.getPars());
+        String urlPars = m_senderConfigManager.queryParString(sender);
+        System.out.println("urlPars:"+urlPars);
 		try {
-			urlPars = urlPars.replace("${receiver}", URLEncoder.encode(receiver, "utf-8"))
-									.replace("${content}",	URLEncoder.encode(content, "utf-8"));
+			urlPars = urlPars.replace("${mobiles}", URLEncoder.encode(receiver, "utf-8"))
+									.replace("${message}",	URLEncoder.encode(content, "utf-8"));
 		} catch (Exception e) {
-			Cat.logError(e);
+			Cat.logError("数据编码异常：receiver："+receiver+",\ncontent:"+content+"\n",e);
+			return false;
 		}
-
 		return httpSend(sender.getSuccessCode(), sender.getType(), urlPrefix, urlPars);
 	}
 }

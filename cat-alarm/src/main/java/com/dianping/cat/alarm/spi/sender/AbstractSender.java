@@ -25,9 +25,8 @@ import org.codehaus.plexus.logging.Logger;
 import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -81,7 +80,6 @@ public abstract class AbstractSender implements Sender, LogEnabled {
             }
         }
     }
-
     private boolean httpPostSend(String successCode, String urlPrefix, String content) {
         URL url = null;
         InputStream in = null;
@@ -102,13 +100,16 @@ public abstract class AbstractSender implements Sender, LogEnabled {
 
             writer.write(content);
             writer.flush();
+            int responseCode = ((HttpURLConnection) conn).getResponseCode();
+            String responseMessage = ((HttpURLConnection)conn).getResponseMessage();
+            System.out.println(responseCode + responseMessage);
 
-            in = conn.getInputStream();
-            StringBuilder sb = new StringBuilder();
-
-            sb.append(Files.forIO().readFrom(in, "utf-8")).append("");
-            if (sb.toString().contains(successCode)) {
+            if (String.valueOf(responseCode).equals(successCode)) {
                 sendSuccess = true;
+                in = conn.getInputStream();
+                StringBuilder sb = new StringBuilder();
+                sb.append(Files.forIO().readFrom(in, "utf-8")).append("");
+                System.out.println("return message:"+sb.toString());
                 return true;
             } else {
                 return false;
@@ -133,6 +134,7 @@ public abstract class AbstractSender implements Sender, LogEnabled {
     }
 
     public boolean httpSend(String successCode, String type, String urlPrefix, String urlPars) {
+        System.out.println("successCode:"+successCode+",type:"+type+",urlPrefix:"+urlPrefix+",urlPars:"+urlPars);
         if ("get".equalsIgnoreCase(type)) {
             return httpGetSend(successCode, urlPrefix, urlPars);
         } else if ("post".equalsIgnoreCase(type)) {
