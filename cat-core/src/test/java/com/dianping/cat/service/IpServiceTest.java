@@ -21,7 +21,15 @@ package com.dianping.cat.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dianping.cat.core.dal.Hostinfo;
+import com.dianping.cat.core.dal.HostinfoDao;
+import com.dianping.cat.core.dal.HostinfoEntity;
+import com.dianping.cat.core.myconfig.WebServerConfig;
+import com.dianping.cat.core.myconfig.WebServerConfigDao;
+import com.dianping.cat.core.myconfig.WebServerConfigEntity;
+import com.dianping.cat.test.MyService;
 import org.junit.Test;
+import org.unidal.dal.jdbc.DalException;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ComponentTestCase;
 
@@ -31,7 +39,41 @@ public class IpServiceTest extends ComponentTestCase {
 	IpService2 service;
 
 	List<Long> result = new ArrayList<Long>();
-
+    @Test
+    public void test1(){
+        HostinfoDao m_hostinfoDao = lookup(HostinfoDao.class);
+        try {
+            Hostinfo byIp = m_hostinfoDao.findByIp("192.168.7.239", HostinfoEntity.READSET_FULL);
+            System.out.println(byIp);
+        } catch (Exception e) {
+            System.out.println("fail");
+        }
+    }
+    @Test
+    public void test20(){
+        WebServerConfigDao m_webServerConfigDao = lookup(WebServerConfigDao.class);
+        try {
+            WebServerConfig webServerConfig = m_webServerConfigDao.findOne(WebServerConfigEntity.READSET_FULL);
+            System.out.println(webServerConfig);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void test21(){
+        WebServerConfigService webServerConfigService = lookup(WebServerConfigService.class);
+        try {
+            String host = webServerConfigService.getHost();
+            System.out.println(host);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void test10(){
+        MyService myService = lookup(MyService.class);
+        myService.a();
+    }
 	@Test
 	public void getSystemTime() throws Exception {
 		System.err.println(System.currentTimeMillis() - 60 * 1000 * 2);

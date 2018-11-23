@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities do-package="com.dianping.cat.core.myconfig" gen="true">
+    <entity name="web-server-config" table="web_server_config" alias="wsc">
+        <member name="id" field="id" value-type="int" length="10" nullable="false" key="true" />
+        <member name="domain" field="domain" value-type="String" length="256" nullable="false" />
+        <var name="key-id" value-type="int" key-member="id" />
+        <primary-key name="PRIMARY" members="id" />
+        <readsets>
+            <readset name="FULL" all="true" />
+        </readsets>
+        <query-defs>
+            <query name="find-one" type="SELECT">
+                <statement><![CDATA[SELECT <FIELDS/>
+        FROM <TABLE/>
+        ORDER BY <FIELD name='id'/> LIMIT 1]]></statement>
+            </query>
+        </query-defs>
+    </entity>
+</entities>

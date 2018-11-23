@@ -56,6 +56,11 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <optional>true</optional>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -90,6 +95,7 @@
 						<configuration>
 							<manifest>${basedir}/src/main/resources/META-INF/dal/jdbc/report-manifest.xml,
 								${basedir}/src/main/resources/META-INF/dal/jdbc/config-manifest.xml,
+                                ${basedir}/src/main/resources/META-INF/dal/jdbc/myconfig-manifest.xml,
 							</manifest>
 						</configuration>
 					</execution>

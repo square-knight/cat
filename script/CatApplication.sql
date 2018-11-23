@@ -1,3 +1,8 @@
+CREATE TABLE `web_server_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `domain` varchar(50) NOT NULL COMMENT '域名',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COMMENT='CAT WEB服务域名配置';
 CREATE TABLE `dailyreport` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(20) NOT NULL COMMENT '报表名称, transaction, problem...',
