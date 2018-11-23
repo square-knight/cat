@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.dianping.cat.service.WebServerConfigService;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
@@ -82,6 +83,9 @@ public class TransactionAlert implements Task, LogEnabled {
 
 	@Inject
 	protected AlertManager m_sendManager;
+
+    @Inject
+    private WebServerConfigService m_webServerConfigService;
 
 	protected Logger m_logger;
 
@@ -259,6 +263,7 @@ public class TransactionAlert implements Task, LogEnabled {
 			entity.setDate(alertResult.getAlertTime()).setContent(alertResult.getContent())
 									.setLevel(alertResult.getAlertLevel());
 			entity.setMetric(type + "-" + name + "-" + monitor).setType(getName()).setGroup(domain);
+			entity.setWebServer(m_webServerConfigService.getDomain());
 			m_sendManager.addAlert(entity);
 		}
 	}

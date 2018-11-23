@@ -77,9 +77,6 @@ public class AlertManager implements Initializable {
 	@Inject
 	private ServerConfigManager m_configManager;
 
-	@Inject
-    private WebServerConfigService m_webServerConfigService;
-
 	private BlockingQueue<AlertEntity> m_alerts = new LinkedBlockingDeque<AlertEntity>(10000);
 
 	private Map<String, AlertEntity> m_unrecoveredAlerts = new ConcurrentHashMap<String, AlertEntity>(1000);
@@ -89,8 +86,6 @@ public class AlertManager implements Initializable {
 	private ConcurrentHashMap<AlertEntity, Long> m_alertMap = new ConcurrentHashMap<AlertEntity, Long>();
 
 	public boolean addAlert(AlertEntity entity) {
-        String webServer = m_webServerConfigService.getDomain();
-        entity.setWebServer(webServer);
 
         m_alertMap.put(entity, entity.getDate().getTime());
 

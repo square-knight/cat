@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.dianping.cat.service.WebServerConfigService;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -64,7 +65,8 @@ public class ExceptionAlert implements Task {
 
 	@Inject
 	protected AlertManager m_sendManager;
-
+    @Inject
+    private WebServerConfigService m_webServerConfigService;
 	protected TopMetric buildTopMetric(Date date) {
 		TopReport topReport = queryTopReport(date);
 		TopMetric topMetric = new TopMetric(ALERT_PERIOD, Integer.MAX_VALUE, m_exceptionConfigManager);
@@ -92,6 +94,7 @@ public class ExceptionAlert implements Task {
 
 					entity.setDate(new Date()).setContent(exception.toString()).setLevel(exception.getType());
 					entity.setMetric(metricName).setType(getName()).setGroup(domain);
+                    entity.setWebServer(m_webServerConfigService.getDomain());
 					m_sendManager.addAlert(entity);
 				}
 			} catch (Exception e) {
