@@ -79,7 +79,7 @@ public class ExceptionDecorator extends ProjectDecorator implements Initializabl
 		String domain = alert.getGroup();
 		String contactInfo = buildContactInfo(domain);
 		Map<Object, Object> map = new HashMap<Object, Object>();
-
+        map.put("catWebServer", alert.getWebServer());
 		map.put("domain", domain);
 		map.put("content", alert.getContent());
 		map.put("date", m_format.format(alert.getDate()));
