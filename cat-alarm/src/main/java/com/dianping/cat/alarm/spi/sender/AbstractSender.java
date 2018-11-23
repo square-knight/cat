@@ -101,15 +101,13 @@ public abstract class AbstractSender implements Sender, LogEnabled {
             writer.write(content);
             writer.flush();
             int responseCode = ((HttpURLConnection) conn).getResponseCode();
-            String responseMessage = ((HttpURLConnection)conn).getResponseMessage();
-            System.out.println(responseCode + responseMessage);
-
             if (String.valueOf(responseCode).equals(successCode)) {
+//                try{
+//                    in = conn.getInputStream();
+//                    StringBuilder sb = new StringBuilder();
+//                    sb.append(Files.forIO().readFrom(in, "utf-8")).append("");
+//                }catch (Exception e){}
                 sendSuccess = true;
-                in = conn.getInputStream();
-                StringBuilder sb = new StringBuilder();
-                sb.append(Files.forIO().readFrom(in, "utf-8")).append("");
-                System.out.println("return message:"+sb.toString());
                 return true;
             } else {
                 return false;
@@ -134,7 +132,6 @@ public abstract class AbstractSender implements Sender, LogEnabled {
     }
 
     public boolean httpSend(String successCode, String type, String urlPrefix, String urlPars) {
-        System.out.println("successCode:"+successCode+",type:"+type+",urlPrefix:"+urlPrefix+",urlPars:"+urlPars);
         if ("get".equalsIgnoreCase(type)) {
             return httpGetSend(successCode, urlPrefix, urlPars);
         } else if ("post".equalsIgnoreCase(type)) {

@@ -26,6 +26,7 @@ import java.util.List;
 import com.dianping.cat.Cat;
 import com.dianping.cat.alarm.sender.entity.Sender;
 import com.dianping.cat.alarm.spi.AlertChannel;
+import com.dianping.cat.common.Constant;
 
 public class MailSender extends AbstractSender {
 
@@ -72,7 +73,12 @@ public class MailSender extends AbstractSender {
 		} catch (Exception e) {
 			Cat.logError(e);
 		}
-
-		return httpSend(sender.getSuccessCode(), sender.getType(), urlPrefix, urlPars);
+        boolean b = httpSend(sender.getSuccessCode(), sender.getType(), urlPrefix, urlPars);
+		String status = Constant.EVENT_SUCCESS;
+		if(!b){
+            status = Constant.EVENT_FAIL;
+        }
+        Cat.logEvent(Constant.EVENT_TYPE_SENDER,Constant.EVENT_NAME_MAIL,status,urlPars);
+        return b;
 	}
 }

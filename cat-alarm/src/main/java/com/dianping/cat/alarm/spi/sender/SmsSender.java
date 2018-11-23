@@ -24,6 +24,7 @@ import java.util.List;
 import com.dianping.cat.Cat;
 import com.dianping.cat.alarm.sender.entity.Sender;
 import com.dianping.cat.alarm.spi.AlertChannel;
+import com.dianping.cat.common.Constant;
 
 public class SmsSender extends AbstractSender {
 
@@ -59,10 +60,7 @@ public class SmsSender extends AbstractSender {
 		String filterContent = message.getContent().replaceAll("(<a href.*(?=</a>)</a>)|(\n)", "");
 		String content = message.getTitle() + " " + filterContent;
 		String urlPrefix = sender.getUrl();
-        System.out.println("urlPrefix:"+urlPrefix);
-        System.out.println("pars:"+sender.getPars());
         String urlPars = m_senderConfigManager.queryParString(sender);
-        System.out.println("urlPars:"+urlPars);
 		try {
 			urlPars = urlPars.replace("${mobiles}", URLEncoder.encode(receiver, "utf-8"))
 									.replace("${message}",	URLEncoder.encode(content, "utf-8"));
@@ -70,6 +68,12 @@ public class SmsSender extends AbstractSender {
 			Cat.logError("数据编码异常：receiver："+receiver+",\ncontent:"+content+"\n",e);
 			return false;
 		}
-		return httpSend(sender.getSuccessCode(), sender.getType(), urlPrefix, urlPars);
+        boolean b = httpSend(sender.getSuccessCode(), sender.getType(), urlPrefix, urlPars);
+        String status = Constant.EVENT_SUCCESS;
+        if(!b){
+            status = Constant.EVENT_FAIL;
+        }
+        Cat.logEvent(Constant.EVENT_TYPE_SENDER,Constant.EVENT_NAME_SMS,status,urlPars);
+        return b;
 	}
 }
