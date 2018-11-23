@@ -27,6 +27,9 @@
          <table name="config"/>
          <table name="business_config"/>
       </group>
+       <group name="myconfig" package="com.dianping.cat.core.myconfig">
+           <table name="web_server_config"/>
+       </group>
    </jdbc>
    <jdbc package="com.dianping.cat.app" name="app">
       <datasource>
