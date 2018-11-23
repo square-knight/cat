@@ -442,15 +442,15 @@
 					<role>com.dianping.cat.alarm.spi.AlertManager</role>
 				</requirement>
 				<requirement>
+					<role>com.dianping.cat.service.WebServerConfigService</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.cat.report.service.ModelService</role>
 					<role-hint>transaction</role-hint>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</role>
 				</requirement>
-                <requirement>
-                    <role>com.dianping.cat.service.WebServerConfigService</role>
-                </requirement>
 			</requirements>
 		</component>
 		<component>
@@ -568,15 +568,15 @@
 					<role>com.dianping.cat.alarm.spi.AlertManager</role>
 				</requirement>
 				<requirement>
+					<role>com.dianping.cat.service.WebServerConfigService</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.cat.report.service.ModelService</role>
 					<role-hint>event</role-hint>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.report.page.event.transform.EventMergeHelper</role>
 				</requirement>
-                <requirement>
-                    <role>com.dianping.cat.service.WebServerConfigService</role>
-                </requirement>
 			</requirements>
 		</component>
 		<component>
@@ -1200,9 +1200,9 @@
 				<requirement>
 					<role>com.dianping.cat.alarm.spi.AlertManager</role>
 				</requirement>
-                <requirement>
-                    <role>com.dianping.cat.service.WebServerConfigService</role>
-                </requirement>
+				<requirement>
+					<role>com.dianping.cat.service.WebServerConfigService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

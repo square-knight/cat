@@ -1,31 +1,5 @@
 <plexus>
 	<components>
-        <component>
-            <role>com.dianping.cat.core.myconfig.WebServerConfigDao</role>
-            <implementation>com.dianping.cat.core.myconfig.WebServerConfigDao</implementation>
-        </component>
-        <component>
-            <role>org.unidal.dal.jdbc.mapping.TableProvider</role>
-            <role-hint>web-server-config</role-hint>
-            <implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
-            <configuration>
-                <physical-table-name>web_server_config</physical-table-name>
-                <data-source-name>cat</data-source-name>
-            </configuration>
-        </component>
-        <component>
-            <role>com.dianping.cat.service.WebServerConfigService</role>
-            <implementation>com.dianping.cat.service.WebServerConfigService</implementation>
-            <requirements>
-                <requirement>
-                    <role>com.dianping.cat.core.myconfig.WebServerConfigDao</role>
-                </requirement>
-            </requirements>
-        </component>
-        <component>
-            <role>com.dianping.cat.test.MyService</role>
-            <implementation>com.dianping.cat.test.MyService</implementation>
-        </component>
 		<component>
 			<role>com.dianping.cat.analysis.MessageConsumer</role>
 			<implementation>com.dianping.cat.analysis.RealtimeConsumer</implementation>
@@ -398,6 +372,15 @@
 		<component>
 			<role>com.dianping.cat.core.dal.DailyReportDao</role>
 			<implementation>com.dianping.cat.core.dal.DailyReportDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.HostinfoDao</role>
+			<implementation>com.dianping.cat.core.dal.HostinfoDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>
