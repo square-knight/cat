@@ -17,25 +17,25 @@ import org.unidal.lookup.annotation.Named;
  */
 @Named
 public class WebServerConfigService {
-    private String host;
+    private String domain;
     @Inject
     private WebServerConfigDao webServerConfigDao;
 
-    public String getHost(){
-        if(null == host){
-            host = getHostFromDB();
+    public String getDomain(){
+        if(null == domain){
+            domain = getDomainFromDB();
         }
-        return host;
+        return domain;
     }
 
-    private String getHostFromDB(){
-        String host = "cat-web-server";
+    private String getDomainFromDB(){
+        String domain = "cat-web-server";
         try {
             WebServerConfig webServerConfig = webServerConfigDao.findOne(WebServerConfigEntity.READSET_FULL);
-            host = webServerConfig.getDomain();
+            domain = webServerConfig.getDomain();
         } catch (Exception e) {
             Cat.logError(e);
         }
-        return host;
+        return domain;
     }
 }

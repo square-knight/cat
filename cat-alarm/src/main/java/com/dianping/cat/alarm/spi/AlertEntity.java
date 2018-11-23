@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AlertEntity {
+    private String m_webServer;
 
 	private Date m_date;
 
@@ -170,8 +171,15 @@ public class AlertEntity {
 
 	@Override
 	public String toString() {
-		return "AlertEntity [m_date=" + m_date + ", m_type=" + m_type + ", m_group=" + m_group + ", m_level=" + m_level
+		return "AlertEntity ["+"m_webServer=" + m_webServer+", m_date=" + m_date + ", m_type=" + m_type + ", m_group=" + m_group + ", m_level=" + m_level
 								+ ", m_metric=" + m_metric + "]";
 	}
 
+    public String getWebServer() {
+        return m_webServer;
+    }
+
+    public void setWebServer(String webServer) {
+        this.m_webServer = webServer;
+    }
 }

@@ -29,6 +29,7 @@ import com.dianping.cat.alarm.spi.spliter.SpliterManager;
 import com.dianping.cat.config.server.ServerConfigManager;
 import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.Event;
+import com.dianping.cat.service.WebServerConfigService;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.helper.Threads;
@@ -76,6 +77,9 @@ public class AlertManager implements Initializable {
 	@Inject
 	private ServerConfigManager m_configManager;
 
+	@Inject
+    private WebServerConfigService m_webServerConfigService;
+
 	private BlockingQueue<AlertEntity> m_alerts = new LinkedBlockingDeque<AlertEntity>(10000);
 
 	private Map<String, AlertEntity> m_unrecoveredAlerts = new ConcurrentHashMap<String, AlertEntity>(1000);
@@ -85,7 +89,10 @@ public class AlertManager implements Initializable {
 	private ConcurrentHashMap<AlertEntity, Long> m_alertMap = new ConcurrentHashMap<AlertEntity, Long>();
 
 	public boolean addAlert(AlertEntity entity) {
-		m_alertMap.put(entity, entity.getDate().getTime());
+        String webServer = m_webServerConfigService.getDomain();
+        entity.setWebServer(webServer);
+
+        m_alertMap.put(entity, entity.getDate().getTime());
 
 		String group = entity.getGroup();
 		Cat.logEvent("Alert:" + entity.getType().getName(), group, Event.SUCCESS, entity.toString());
@@ -166,7 +173,7 @@ public class AlertManager implements Initializable {
 				if (suspendMinute > 0) {
 					rawContent = rawContent + "<br/>[告警间隔时间]" + suspendMinute + "分钟";
 				}
-				String content = m_splitterManager.process(rawContent, channel);
+                String content = m_splitterManager.process(rawContent, channel);
 				message = new SendMessageEntity(group, title, type, content, receivers);
 
 				if (m_senderManager.sendAlert(channel, message)) {

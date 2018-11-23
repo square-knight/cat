@@ -29,7 +29,6 @@ import com.dianping.cat.core.myconfig.WebServerConfigDao;
 import com.dianping.cat.core.myconfig.WebServerConfigEntity;
 import com.dianping.cat.test.MyService;
 import org.junit.Test;
-import org.unidal.dal.jdbc.DalException;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ComponentTestCase;
 
@@ -63,7 +62,7 @@ public class IpServiceTest extends ComponentTestCase {
     public void test21(){
         WebServerConfigService webServerConfigService = lookup(WebServerConfigService.class);
         try {
-            String host = webServerConfigService.getHost();
+            String host = webServerConfigService.getDomain();
             System.out.println(host);
         } catch (Exception e) {
             e.printStackTrace();

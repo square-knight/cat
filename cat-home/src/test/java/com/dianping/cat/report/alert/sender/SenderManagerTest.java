@@ -43,9 +43,10 @@ public class SenderManagerTest extends ComponentTestCase {
 
 		receivers.add("yong.you@dianping.com");
 		SendMessageEntity message = new SendMessageEntity("Test", "test", "title", "content", receivers);
-		boolean result = manager.sendAlert(AlertChannel.MAIL, message);
+        System.out.println(message.getContent());
+//		boolean result = manager.sendAlert(AlertChannel.MAIL, message);
 
-		System.out.println(result);
+//		System.out.println(result);
 	}
 
 }

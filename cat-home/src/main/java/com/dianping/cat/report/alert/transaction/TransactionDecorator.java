@@ -47,6 +47,7 @@ public class TransactionDecorator extends Decorator implements Initializable {
 		Map<Object, Object> datas = new HashMap<Object, Object>();
 		String[] fields = alert.getMetric().split("-");
 
+        datas.put("catWebServer", alert.getWebServer());
 		datas.put("domain", alert.getGroup());
 		datas.put("type", fields[0]);
 		datas.put("name", fields[1]);
