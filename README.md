@@ -16,11 +16,11 @@
 如果命令成功结束，代码就已经生成好了，项目不会再报错，可以运行起来了，
 # 3.自动生成代码
 自动生成代码的功能就简单说两句，
- 1.入口配置在pom文件<manifest>标签中，插件会扫描这些manifest中的配置。
+ 1.入口配置在pom文件插件codegen-maven-plugin中的配置。
  
  2.实际的类配置可以参考META-INF/dal/jdbc/*，写完xml配置要执行mvn idea:idea进行代码生成。
  
- 3.容器配置位于META-INF/plexus/components.xml中，
+ 3.容器配置位于pom文件插件plexus-maven-plugin中的配置。
  
 # 4.我做的修改
 
