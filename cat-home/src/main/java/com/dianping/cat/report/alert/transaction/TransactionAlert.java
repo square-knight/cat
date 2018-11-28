@@ -18,10 +18,7 @@
  */
 package com.dianping.cat.report.alert.transaction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import com.dianping.cat.service.WebServerConfigService;
@@ -98,35 +95,122 @@ public class TransactionAlert implements Task, LogEnabled {
 	private double[] buildArrayData(int start, int end, String type, String name, String monitor,
 							TransactionReport report) {
 		TransactionType t = report.findOrCreateMachine(Constants.ALL).findOrCreateType(type);
-		TransactionName transactionName = t.findOrCreateName(name);
-		Map<Integer, Range> range = transactionName.getRanges();
+		//fxp修改,这里模糊匹配
+        List<Map<Integer,Range>> ranges = new ArrayList<>();
+
+        if(ParttenInterceptor.isParttenedName(name)){
+            Set<String> reportNameKeys = t.getNames().keySet();
+            Set<String> matchNames = ParttenInterceptor.matchNames(reportNameKeys, name);
+            for (String matchName :
+                    matchNames) {
+                TransactionName transactionName = t.findOrCreateName(matchName);
+                ranges.add(transactionName.getRanges());
+            }
+        }else{
+                TransactionName transactionName = t.findOrCreateName(name);
+                ranges.add(transactionName.getRanges());
+        }
+//        TransactionName transactionName = t.findOrCreateName(name);
+//		Map<Integer, Range> range = transactionName.getRanges();
 		int length = end - start + 1;
 		double[] datas = new double[60];
 		double[] result = new double[length];
 
-		if (AVG.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				datas[entry.getKey()] = entry.getValue().getAvg();
-			}
-		} else if (COUNT.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				datas[entry.getKey()] = entry.getValue().getCount();
-			}
-		} else if (FAIL_RATIO.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				Range value = entry.getValue();
+		computeData(monitor,ranges,datas,name,start,length);
 
-				if (value.getCount() > 0) {
-					datas[entry.getKey()] = value.getFails() * 1.0 / value.getCount();
-				}
-			}
-		}
 		System.arraycopy(datas, start, result, 0, length);
 
 		return result;
 	}
 
-	protected int calAlreadyMinute() {
+    private void computeData(String monitor, List<Map<Integer, Range>> ranges, double[] datas, String name, int start, int length) {
+	    if(name.contains(ParttenInterceptor.PARTTEN_ALL)){
+            int[] datasTotalCount = new int[60];
+            if (AVG.equalsIgnoreCase(monitor)) {
+                double[] datasTotalTime = new double[60];
+                for (Map<Integer, Range> range : ranges) {
+                    for (Entry<Integer, Range> entry : range.entrySet()) {
+                        datasTotalCount[entry.getKey()] += entry.getValue().getCount();
+                        datasTotalTime[entry.getKey()] += entry.getValue().getCount()*entry.getValue().getAvg();
+                    }
+                }
+                for (int i = start; i < start + length; i++) {
+                    if(datasTotalCount[i] != 0){
+                        datas[i] = datasTotalTime[i]/datasTotalCount[i];
+                    }
+                }
+            } else if (COUNT.equalsIgnoreCase(monitor)) {
+                for (Map<Integer, Range> range : ranges) {
+                    for (Entry<Integer, Range> entry : range.entrySet()) {
+                        datas[entry.getKey()] += entry.getValue().getCount();
+                    }
+                }
+            } else if (FAIL_RATIO.equalsIgnoreCase(monitor)) {
+                int[] datasTotalFails = new int[60];
+                for (Map<Integer, Range> range : ranges) {
+                    for (Entry<Integer, Range> entry : range.entrySet()) {
+                        Range value = entry.getValue();
+                        datasTotalFails[entry.getKey()] += value.getFails();
+                        datasTotalCount[entry.getKey()] += value.getCount();
+                    }
+                }
+                for (int i = start; i < start + length; i++) {
+                    if(datasTotalCount[i] != 0){
+                        datas[i] = datasTotalFails[i] * 1.0 / datasTotalCount[i];
+                    }
+                }
+            }
+        }else if(name.contains(ParttenInterceptor.PARTTEN_EITHER)){
+            if (AVG.equalsIgnoreCase(monitor)) {
+                for (Map<Integer, Range> range : ranges) {
+                    for (Entry<Integer, Range> entry : range.entrySet()) {
+                        datas[entry.getKey()] = datas[entry.getKey()] > entry.getValue().getAvg() ?
+                                datas[entry.getKey()] : entry.getValue().getAvg();
+                    }
+                }
+            } else if (COUNT.equalsIgnoreCase(monitor)) {
+                for (Map<Integer, Range> range : ranges) {
+                    for (Entry<Integer, Range> entry : range.entrySet()) {
+                        datas[entry.getKey()] = datas[entry.getKey()] > entry.getValue().getCount() ?
+                                datas[entry.getKey()] : entry.getValue().getCount();
+                    }
+                }
+            } else if (FAIL_RATIO.equalsIgnoreCase(monitor)) {
+                for (Map<Integer, Range> range : ranges) {
+                    for (Entry<Integer, Range> entry : range.entrySet()) {
+                        Range value = entry.getValue();
+                        if (value.getCount() > 0) {
+                            double failRatio = value.getFails() * 1.0 / value.getCount();
+                            datas[entry.getKey()] = datas[entry.getKey()] > failRatio ?
+                                    datas[entry.getKey()] : failRatio;
+                        }
+                    }
+                }
+            }
+        }else{
+            Map<Integer, Range> range = ranges.get(0);
+            if (AVG.equalsIgnoreCase(monitor)) {
+                for (Entry<Integer, Range> entry : range.entrySet()) {
+                    datas[entry.getKey()] = entry.getValue().getAvg();
+                }
+            } else if (COUNT.equalsIgnoreCase(monitor)) {
+                for (Entry<Integer, Range> entry : range.entrySet()) {
+                    datas[entry.getKey()] = entry.getValue().getCount();
+                }
+            } else if (FAIL_RATIO.equalsIgnoreCase(monitor)) {
+                for (Entry<Integer, Range> entry : range.entrySet()) {
+                    Range value = entry.getValue();
+
+                    if (value.getCount() > 0) {
+                        datas[entry.getKey()] = value.getFails() * 1.0 / value.getCount();
+                    }
+                }
+            }
+        }
+
+    }
+
+    protected int calAlreadyMinute() {
 		long current = (System.currentTimeMillis()) / 1000 / 60;
 		int minute = (int) (current % (60)) - DATA_AREADY_MINUTE;
 
@@ -262,6 +346,9 @@ public class TransactionAlert implements Task, LogEnabled {
 
 			entity.setDate(alertResult.getAlertTime()).setContent(alertResult.getContent())
 									.setLevel(alertResult.getAlertLevel());
+			if(ParttenInterceptor.isParttenedName(name)){
+			    name = ParttenInterceptor.getAlertName(name,"Unknown");
+            }
 			entity.setMetric(type + "-" + name + "-" + monitor).setType(getName()).setGroup(domain);
 			entity.setWebServer(m_webServerConfigService.getDomain());
 			m_sendManager.addAlert(entity);
