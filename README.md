@@ -25,6 +25,9 @@
 # 4.我做的修改
 
  1.主要添加了一个web_server_config表，用于配置在邮件中指向的cat的服务器域名，原来的cat项目这里是写死的。
- 2.修改transaction规则匹配逻辑，支持name模糊匹配策略
+ 2.修改transaction规则匹配逻辑，对name支持两种模糊匹配策略:xyf_partten_all:，:xyf_partten_either:,支持加在头和尾的*，支持以,分割不同name，具体见示例。
 例子：
-name配置为 ``` ```
+```allName:xyf_partten_all:my*```意思是匹配所有以my开头的name，**汇总**匹配到的name的数据与配置的规则做匹配。
+比如监控项配置为count，监控条件为持续1分钟，阈值为10，则同一type下以my开头的name**执行次数之和**1分钟之内如果大于10就会触发报警；
+比如监控项配置为failRatio，监控条件为持续1分钟，阈值为0.5，则同一type下以my开头的name的总**加权失败率**如果大于50%就会触发报警；
+```allName:xyf_partten_either:my*,*2```意思是匹配所有以my开头的或者以2结尾的name，**取最大值**与规则匹配。
