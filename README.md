@@ -26,7 +26,7 @@
 
  1.主要添加了一个web_server_config表，用于配置在邮件中指向的cat的服务器域名，原来的cat项目这里是写死的。
  
- 2.修改transaction规则匹配逻辑，对name支持两种模糊匹配策略:xyf_partten_all:，:xyf_partten_either:,":"前面的字符串为邮件中显示的name,":"后面的为实际name的通配符,支持加在头和尾的"*"，支持以","分割不同name，具体见示例。
+ 2.修改transaction规则匹配逻辑，对name支持两种模糊匹配策略 alias:xyf_partten_all:pattern，alias:xyf_partten_either:pattern,":"前面的alias为name的别名，用于做更加清晰的标识和在邮件中的显示,":"后面的pattern为name的通配符,支持加在头和尾的"*"，支持以","分割不同name(相当于或)，具体见示例。
  
 例子：
 ```allName:xyf_partten_all:my*```意思是匹配所有以my开头的name，**汇总**匹配到的name的数据与配置的规则做匹配。
