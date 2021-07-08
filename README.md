@@ -24,7 +24,7 @@
  
 # 4.我做的修改
 
- 1.主要添加了一个web_server_config表，用于配置在邮件中指向的cat的服务器域名，原来的cat项目这里是写死的。
+ 1.主要添加了一个web_server_config表（其实这种配置不应该单独添加一张表，不过我这里是自己做添加数据库访问的练习，然后就这样了😂。），用于配置在邮件中指向的cat的服务器域名，原来的cat项目这里是写死的。
  
  2.修改transaction规则匹配逻辑，对name支持两种模糊匹配策略 alias:xyf_partten_all:pattern，alias:xyf_partten_either:pattern,":"前面的alias为name的别名，用于做更加清晰的标识和在邮件中的显示,":"后面的pattern为name的通配符,支持加在头和尾的"*"，支持以","分割不同name(相当于或)，具体见示例。
  
